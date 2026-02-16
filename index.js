@@ -15,6 +15,15 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(cors());
+
+app.options('*', cors({
+  origin: 'https://elektraspace-9ehwswmfb-angelitoows-projects.vercel.app',
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  credentials: true
+}));
+
+
 // Para aceptar JSON en las solicitudes
 app.use(express.json());
 
