@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: 'https://elektraspace-9ehwswmfb-angelitoows-projects.vercel.app',
+  origin: 'https://elektraspace.vercel.app/',
   methods: ['GET','POST','PUT','DELETE'],
   credentials: true
 }));
