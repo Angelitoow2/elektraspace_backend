@@ -8,18 +8,14 @@ import { autenticar } from "./authMiddleware.js";
 dotenv.config();
 const app = express();
 
-/*------------------------------------------CORS------------------------------------------*/
-const corsOptions = {
+app.use(cors({
   origin: 'https://elektraspace-9ehwswmfb-angelitoows-projects.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'], // incluir Authorization si usas JWT
+  methods: ['GET','POST','PUT','DELETE'],
   credentials: true
-};
+}));
 
-// Aplicar CORS a todas las requests, incluyendo OPTIONS
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // responder preflight
-
+// O para desarrollo rápido (acepta cualquier origen)
+app.use(cors());
 // Para aceptar JSON en las solicitudes
 app.use(express.json());
 
