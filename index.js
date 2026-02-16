@@ -11,11 +11,12 @@ dotenv.config();
 /*------------------------------------------CORS------------------------------------------*/
 app.use(
   cors({
-
-    origin: "https://elektraspace.vercel.app",
+    origin: [
+      "https://elektraspace.vercel.app",
+      "https://elektraspace-9ehwswmfb-angelitoows-projects.vercel.app"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    credentials: true
   })
 );
 
