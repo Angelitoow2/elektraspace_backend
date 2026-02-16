@@ -1,37 +1,15 @@
-import express from "express";
-import mysql from "mysql2";
-import cors from "cors";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import { autenticar } from "./authMiddleware.js";
-
-dotenv.config();
-const app = express();
-
-app.use(cors({
-  origin: 'https://elektraspace.vercel.app/',
-  methods: ['GET','POST','PUT','DELETE'],
-  credentials: true
-}));
-
-// O para desarrollo rápido (acepta cualquier origen)
-app.use(cors());
-// Para aceptar JSON en las solicitudes
-app.use(express.json());
-
-//----------------------------------- Conexión DB -----------------------------------//
-const db = mysql.createConnection({
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT,
-  ssl: {
     rejectUnauthorized: false, 
   },
 });
 
-
+/*------------------------------------------CORS------------------------------------------*/
+app.use(
+  cors({
+    origin: ["https://elektraspace.vercel.app"], // dominio del frontend en Vercel
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 /*------------------------------------------Conexión DB------------------------------------------*/
 db.connect((err) => {
   if (err) {
@@ -52,7 +30,7 @@ app.post("/registrar", (req, res) => {
 
   db.query(
     sqlPerfil,
-    [nombres, apellidos, genero, fechaNac, correo, contrasena],
+ [nombres, apellidos, genero, fechaNac, correo, contrasena],
     (err, result) => {
       if (err) {
         console.log("Error al insertar en perfil:", err);
@@ -86,8 +64,7 @@ app.post("/login", (req, res) => {
       console.log("❌ Error al buscar perfil:", err);
       return res.status(500).json({ message: "Error interno del servidor" });
     }
-
-    if (perfilResult.length === 0) {
+  if (perfilResult.length === 0) {
       return res
         .status(401)
         .json({ message: "Correo o contraseña incorrectos" });
@@ -139,6 +116,10 @@ app.get("/modulos", (req, res) => {
     }
     res.json(result); // devuelve los módulos como JSON
   });
+});
+/*------------------------------------------Activar DB------------------------------------------*/
+app.listen(3001, () => {
+  console.log("Server is running on port 3001");
 });
 /*------------------------------------------Temas------------------------------------------*/
 app.post("/tema", autenticar, (req, res) => {
@@ -195,7 +176,7 @@ app.post("/contrasena", autenticar, (req, res) => {
           .status(500)
           .json({ message: "Error al actualizar la contraseña" });
       }
-
+      
       res.json({
         success: true,
         message: "Contraseña actualizada correctamente",
@@ -235,7 +216,7 @@ app.post("/historial", autenticar, (req, res) => {
       INSERT INTO historialAcceso (idPerfilUsuario, idModulo, fechaIngresoModulo)
       VALUES (?, ?, NOW())
     `;
-
+    
     db.query(insertSql, [idPerfil, idModulo], (err, result) => {
       if (err) {
         console.error("❌ Error al registrar ingreso:", err);
@@ -281,12 +262,8 @@ app.put("/historial/salida/:idHistorial", autenticar, (req, res) => {
 
 /*------------------------------------------ Buscar Último Historial ------------------------------------------*/
 app.get("/historial/:idModulo", autenticar, (req, res) => {
-  const idPerfil = req.user?.idPerfil;
+  const idPerfil = req.user.idPerfil;
   const idModulo = req.params.idModulo;
-
-  console.log("🧩 Consultando historial:");
-  console.log("   → idPerfil:", idPerfil);
-  console.log("   → idModulo:", idModulo);
 
   const sql = `
     SELECT idHistorial, fechaIngresoModulo, fechaSalidaModulo, tiempoUso
@@ -298,20 +275,19 @@ app.get("/historial/:idModulo", autenticar, (req, res) => {
 
   db.query(sql, [idPerfil, idModulo], (err, result) => {
     if (err) {
-      console.error("❌ Error SQL al obtener historial:", err);
-      return res.status(500).json({ message: "Error SQL al obtener historial", error: err });
+      console.error("❌ Error al obtener historial:", err);
+      return res.status(500).json({ message: "Error al obtener historial" });
     }
 
     if (result.length === 0) {
-      console.log("⚠️ Sin registros encontrados.");
-      return res.status(404).json({ message: "Sin registros para este módulo" });
+      return res
+        .status(404)
+        .json({ message: "Sin registros para este módulo" });
     }
 
-    console.log("✅ Último historial:", result[0]);
     res.json(result[0]);
   });
 });
-
 /*------------------------------------------Ruta Raíz------------------------------------------*/
 app.get("/", (req, res) => {
   res.send("Backend de ElektraSpace funcionando correctamente");
