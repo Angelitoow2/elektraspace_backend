@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import { autenticar } from "./authMiddleware.js";
 const app = express();
 
-app.use(cors());
 dotenv.config();
 app.use(express.json());
 
@@ -25,11 +24,15 @@ const db = mysql.createConnection({
 /*------------------------------------------CORS------------------------------------------*/
 app.use(
   cors({
-    origin: ["https://elektraspace.vercel.app"], // dominio del frontend en Vercel
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: "https://elektraspace.vercel.app", /*Dominio en Vercel */
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+app.options("*", cors());
+
 /*------------------------------------------Conexión DB------------------------------------------*/
 db.connect((err) => {
   if (err) {
