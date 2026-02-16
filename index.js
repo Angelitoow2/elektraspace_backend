@@ -7,8 +7,19 @@ import { autenticar } from "./authMiddleware.js";
 const app = express();
 
 dotenv.config();
-app.use(express.json());
 
+/*------------------------------------------CORS------------------------------------------*/
+app.use(
+  cors({
+    origin: "https://elektraspace.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+
+app.use(express.json());
 
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
@@ -21,17 +32,6 @@ const db = mysql.createConnection({
   },
 });
 
-/*------------------------------------------CORS------------------------------------------*/
-app.use(
-  cors({
-    origin: "https://elektraspace.vercel.app", /*Dominio en Vercel */
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
-
-app.options("*", cors());
 
 /*------------------------------------------Conexión DB------------------------------------------*/
 db.connect((err) => {
@@ -140,10 +140,6 @@ app.get("/modulos", (req, res) => {
     }
     res.json(result); // devuelve los módulos como JSON
   });
-});
-/*------------------------------------------Activar DB------------------------------------------*/
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
 });
 /*------------------------------------------Temas------------------------------------------*/
 app.post("/tema", autenticar, (req, res) => {
