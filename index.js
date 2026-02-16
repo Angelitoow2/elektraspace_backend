@@ -1,3 +1,23 @@
+ import express from "express";
+import mysql from "mysql2";
+import cors from "cors";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import { autenticar } from "./authMiddleware.js";
+const app = express();
+
+app.use(cors());
+dotenv.config();
+app.use(express.json());
+
+
+const db = mysql.createConnection({
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT,
+  ssl: {
     rejectUnauthorized: false, 
   },
 });
