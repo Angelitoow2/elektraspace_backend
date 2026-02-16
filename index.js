@@ -4,23 +4,21 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { autenticar } from "./authMiddleware.js";
-const app = express();
 
 dotenv.config();
+const app = express();
 
 /*------------------------------------------CORS------------------------------------------*/
 app.use(cors({
   origin: 'https://elektraspace-9ehwswmfb-angelitoows-projects.vercel.app',
-  methods: ['GET','POST','PUT','DELETE'],
-  credentials: true // si necesitas cookies
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
 }));
 
-// O para desarrollo rápido (acepta cualquier origen)
-app.use(cors());
-
-
+// Para aceptar JSON en las solicitudes
 app.use(express.json());
 
+//----------------------------------- Conexión DB -----------------------------------//
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
