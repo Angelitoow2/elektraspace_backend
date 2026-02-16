@@ -9,20 +9,16 @@ dotenv.config();
 const app = express();
 
 /*------------------------------------------CORS------------------------------------------*/
-app.use(cors({
+const corsOptions = {
   origin: 'https://elektraspace-9ehwswmfb-angelitoows-projects.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'], // incluir Authorization si usas JWT
   credentials: true
-}));
+};
 
-app.use(cors());
-
-app.options('*', cors({
-  origin: 'https://elektraspace-9ehwswmfb-angelitoows-projects.vercel.app',
-  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-  credentials: true
-}));
-
+// Aplicar CORS a todas las requests, incluyendo OPTIONS
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // responder preflight
 
 // Para aceptar JSON en las solicitudes
 app.use(express.json());
