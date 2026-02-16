@@ -10,25 +10,13 @@ dotenv.config();
 
 /*------------------------------------------CORS------------------------------------------*/
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-
-    if (
-      origin.includes("vercel.app")
-    ) {
-      return callback(null, true);
-    }
-
-    return callback(new Error("Not allowed by CORS"));
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  origin: 'https://elektraspace-9ehwswmfb-angelitoows-projects.vercel.app',
+  methods: ['GET','POST','PUT','DELETE'],
+  credentials: true // si necesitas cookies
 }));
 
-// IMPORTANTE para preflight
-app.options(/.*/, cors());
-
+// O para desarrollo rápido (acepta cualquier origen)
+app.use(cors());
 
 
 app.use(express.json());
