@@ -1,11 +1,13 @@
- import express from "express";
+import express from "express";
 import mysql from "mysql2";
 import cors from "cors";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import { autenticar } from "./authMiddleware.js";
 const app = express();
 
 app.use(cors());
+dotenv.config();
 app.use(express.json());
 
 
@@ -48,7 +50,7 @@ app.post("/registrar", (req, res) => {
 
   db.query(
     sqlPerfil,
- [nombres, apellidos, genero, fechaNac, correo, contrasena],
+    [nombres, apellidos, genero, fechaNac, correo, contrasena],
     (err, result) => {
       if (err) {
         console.log("Error al insertar en perfil:", err);
@@ -82,7 +84,8 @@ app.post("/login", (req, res) => {
       console.log("❌ Error al buscar perfil:", err);
       return res.status(500).json({ message: "Error interno del servidor" });
     }
-  if (perfilResult.length === 0) {
+
+    if (perfilResult.length === 0) {
       return res
         .status(401)
         .json({ message: "Correo o contraseña incorrectos" });
@@ -134,6 +137,10 @@ app.get("/modulos", (req, res) => {
     }
     res.json(result); // devuelve los módulos como JSON
   });
+});
+/*------------------------------------------Activar DB------------------------------------------*/
+app.listen(3001, () => {
+  console.log("Server is running on port 3001");
 });
 /*------------------------------------------Temas------------------------------------------*/
 app.post("/tema", autenticar, (req, res) => {
@@ -190,7 +197,7 @@ app.post("/contrasena", autenticar, (req, res) => {
           .status(500)
           .json({ message: "Error al actualizar la contraseña" });
       }
-      
+
       res.json({
         success: true,
         message: "Contraseña actualizada correctamente",
@@ -230,7 +237,7 @@ app.post("/historial", autenticar, (req, res) => {
       INSERT INTO historialAcceso (idPerfilUsuario, idModulo, fechaIngresoModulo)
       VALUES (?, ?, NOW())
     `;
-    
+
     db.query(insertSql, [idPerfil, idModulo], (err, result) => {
       if (err) {
         console.error("❌ Error al registrar ingreso:", err);
