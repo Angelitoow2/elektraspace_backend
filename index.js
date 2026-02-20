@@ -2,12 +2,10 @@
 import mysql from "mysql2";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import { autenticar } from "./authMiddleware.js";
 const app = express();
 
 app.use(cors());
-dotenv.config();
 app.use(express.json());
 
 
