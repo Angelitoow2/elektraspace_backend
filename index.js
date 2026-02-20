@@ -138,10 +138,6 @@ app.get("/modulos", (req, res) => {
     res.json(result); // devuelve los módulos como JSON
   });
 });
-/*------------------------------------------Activar DB------------------------------------------*/
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
-});
 /*------------------------------------------Temas------------------------------------------*/
 app.post("/tema", autenticar, (req, res) => {
   const { temaVisual } = req.body;
