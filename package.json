@@ -2,15 +2,11 @@
   "name": "elektraspace-backend",
   "version": "1.0.0",
   "type": "module",
-  "scripts": {
-    "start": "node index.js"
-  },
   "dependencies": {
-    "cors": "^2.8.6",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.0",
-    "mysql": "^2.18.1",
-    "mysql2": "^3.15.3"
+    "mysql": "^2.18.1"
   }
 }
